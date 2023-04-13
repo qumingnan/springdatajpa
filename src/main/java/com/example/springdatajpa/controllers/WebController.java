@@ -6,6 +6,7 @@ import com.example.springdatajpa.services.ClassesService;
 import com.example.springdatajpa.services.UserService;
 import com.example.springdatajpa.utils.ReturnData;
 import jakarta.annotation.PostConstruct;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -13,7 +14,6 @@ import org.springframework.web.bind.annotation.RestController;
 import lombok.*;
 
 //@Data
-@NoArgsConstructor
 @RestController
 public class WebController {
     private UserService userService;
@@ -28,6 +28,15 @@ public class WebController {
     public void createClasses(@RequestParam String name) {
         this.classesService.createClasses(Classes.builder().name(name).build());
     }
+    @GetMapping("/classes/info")
+    public Classes getClassesById(@RequestParam Integer id) {
+
+        return this.classesService.getClassesById(id);
+    }
+    @GetMapping("/classes/all/info")
+    public ReturnData getAllClasses(@RequestParam Integer page) {
+        return this.classesService.getAllClasses(page, pageNum);
+    }
     @PostConstruct
     public void postConstruct() {
         System.out.println("--------------------------------");
@@ -41,20 +50,13 @@ public class WebController {
         return this.userService.getUserByName(name);
     }
     @GetMapping("/user/creation")
+    @Transactional
     public void createUser(@RequestParam String name, @RequestParam int classes) {
         Classes classesInfo = this.classesService.getClassesById(classes);
         User user = User.builder().name(name).classes(classesInfo).build();
         this.userService.createUser(user);
     }
-    @GetMapping("/classes/info")
-    public Classes getClassesById(@RequestParam Integer id) {
 
-        return this.classesService.getClassesById(id);
-    }
-    @GetMapping("/classes/all/info")
-    public ReturnData getAllClasses(@RequestParam Integer page) {
-        return this.classesService.getAllClasses(page, pageNum);
-    }
 
 
 }

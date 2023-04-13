@@ -1,6 +1,7 @@
 package com.example.springdatajpa.services;
 
 import com.example.springdatajpa.entities.Classes;
+import com.example.springdatajpa.entities.User;
 import com.example.springdatajpa.repositories.ClassesRepository;
 
 import com.example.springdatajpa.utils.ReturnData;
@@ -9,7 +10,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.domain.*;
 import org.springframework.stereotype.Service;
 
-@NoArgsConstructor
+import java.util.Optional;
+
 @Service
 public class ClassesService {
     private ClassesRepository classesRepository;
@@ -19,7 +21,12 @@ public class ClassesService {
     }
 
     public Classes getClassesById(int id) {
-        return this.classesRepository.findById(id).orElseThrow();
+        Optional<Classes> optionalClasses = this.classesRepository.findById(id);
+        if (optionalClasses.isPresent()) {
+            return optionalClasses.get();
+        } else {
+            return Classes.builder().build();
+        }
     }
 
     public void createClasses(Classes classes) {

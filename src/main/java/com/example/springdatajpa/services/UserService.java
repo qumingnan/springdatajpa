@@ -19,7 +19,12 @@ public class UserService {
         System.out.println(this.userRepository.getClass().getCanonicalName());
     }
     public User getUserById(int id) {
-        return this.userRepository.findById(id).orElseThrow();
+        Optional<User> optionalUser = this.userRepository.findById(id);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get();
+        } else {
+            return User.builder().build();
+        }
     }
 
     public void createUser(User user) {
